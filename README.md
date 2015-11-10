@@ -10,10 +10,10 @@ As this was a new idea to me, I wanted to learn how to do this. While I was able
 Feeling I may want to come back to this again, I created this repository.
 
 Resources to digest later:
-* http://bwlewis.github.io/GLM/
-* http://www.casact.org/library/studynotes/anderson9.pdf
-* http://multithreaded.stitchfix.com/blog/2015/07/30/gam/
-* https://www.soa.org/Files/Pd/Health/2012-new-orleans-health-53.pdf
-* http://www.casact.org/library/studynotes/Werner_Modlin_Ratemaking.pdf
+* [CAS Study Note -- A Practitioner's Guide to Generalized Linear Models](http://www.casact.org/library/studynotes/anderson9.pdf)
+* [CAS Basic Ratemaking Study Note](http://www.casact.org/library/studynotes/Werner_Modlin_Ratemaking.pdf)
+* [Generalized Linear Models for Health Actuaries](https://www.soa.org/Files/Pd/Health/2012-new-orleans-health-53.pdf)
+* [Generalized Linear Models, Abridged.](http://bwlewis.github.io/GLM/)
+* [GAM: The Predictive Modeling Silver Bullet](http://multithreaded.stitchfix.com/blog/2015/07/30/gam/)
 
  
