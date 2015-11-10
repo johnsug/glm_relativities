@@ -9,5 +9,8 @@ As this was a new idea to me, I wanted to learn how to do this. While I was able
 
 Feeling I may want to come back to this again, I created this repository.
 
-Other resources:
+Resources to digest later:
+* http://bwlewis.github.io/GLM/
 * http://www.casact.org/library/studynotes/anderson9.pdf
+* http://multithreaded.stitchfix.com/blog/2015/07/30/gam/
+ 
