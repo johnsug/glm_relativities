@@ -8,3 +8,6 @@ As this was a new idea to me, I wanted to learn how to do this. While I was able
 2. Allen Engelhardt's walk-through of chapter 2 of Non-Life Pricing with GLMs, located [here](http://www.cybaea.net/journal/2012/03/13/R-code-for-Chapter-2-of-Non_Life-Insurance-Pricing-with-GLM/)
 
 Feeling I may want to come back to this again, I created this repository.
+
+Other resources:
+* http://www.casact.org/library/studynotes/anderson9.pdf
