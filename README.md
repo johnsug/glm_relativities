@@ -13,4 +13,7 @@ Resources to digest later:
 * http://bwlewis.github.io/GLM/
 * http://www.casact.org/library/studynotes/anderson9.pdf
 * http://multithreaded.stitchfix.com/blog/2015/07/30/gam/
+* https://www.soa.org/Files/Pd/Health/2012-new-orleans-health-53.pdf
+* http://www.casact.org/library/studynotes/Werner_Modlin_Ratemaking.pdf
+
  
