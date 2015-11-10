@@ -1,0 +1,172 @@
+
+## http://www.kantakji.com/media/175505/non-life-insurance-pricing-with-generalized-linear-models-by-esbjoern-ohlsson-and-bjoern-johansson_-springer-2010.pdf
+## http://www.cybaea.net/journal/2012/03/01/R-code-for-Chapter-1-of-Non_Life-Insurance-Pricing-with-GLM/
+## http://www.cybaea.net/journal/2012/03/13/R-code-for-Chapter-2-of-Non_Life-Insurance-Pricing-with-GLM/
+
+
+## data ###############################################################################################################
+## data from Spring website
+## see http://staff.math.su.se/esbj/GLMbook/mccase.txt
+## and http://staff.math.su.se/esbj/GLMbook/mcin.sas
+
+m <- data.frame(
+  class=c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
+  age=c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2), 
+  zone=c(1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7), 
+  duration=c(62.9, 112.9, 133.1, 376.6, 9.4, 70.8, 4.4, 352.1, 840.1, 1378.3, 5505.3, 114.1, 810.9, 62.3, 
+             191.6, 237.3, 162.4, 446.5, 13.2, 82.8, 14.5, 844.8, 1296, 1214.9, 3740.7, 109.4, 404.7, 66.3), 
+  claim_severity=c(18256, 13632, 20877, 13045, 0, 15000, 8018, 8232, 7418, 7318, 6922, 11131, 5970, 6500, 
+                   7754, 6933, 4402, 8214, 0, 5830, 0, 4728, 4252, 4212, 3846, 3925, 5280, 7795), 
+  count=c(17, 7, 9, 7, 0, 1, 1, 52, 69, 75, 136, 2, 14, 1, 43, 34, 11, 8, 0, 3, 0, 94, 99, 37, 56, 4, 5, 1), 
+  pure_premium=c(4936, 845, 1411, 242, 0, 212, 1829, 1216, 609, 398, 171, 195, 103, 104, 1740, 993, 298, 147, 
+                 0, 211, 0, 526, 325, 128, 58, 144, 65, 118), 
+  act_premium=c(2049, 1230, 762, 396, 990, 594, 396, 1229, 738, 457, 238, 594, 356, 238, 1024, 615, 381, 198, 
+                495, 297, 198, 614, 369, 229, 119, 297, 178, 119), 
+  cell=1:28,
+  stringsAsFactors=F)
+
+## set factors
+m$class <- as.factor(m$class)
+m$age <- as.factor(m$age)
+m$zone <- as.factor(m$zone)
+
+## create variables
+m$claim_frequency <- round(m$pure_premium/m$claim_severity,4)
+m$claim_frequency[is.na(m$claim_frequency)] <- 0
+
+factors <- data.frame(rating_factor=c(rep("Vehicle class", 2), 
+                                      rep("Vehicle age", 2), 
+                                      rep("Zone", 7)), 
+                      class=c(1:2, 1:2, 1:7), 
+                      stringsAsFactors=F)
+
+
+## pure premium relativities ##########################################################################################
+
+## duration
+factors$duration[1] <- sum(m$duration[m$class==1])
+factors$duration[2] <- sum(m$duration[m$class==2])
+factors$duration[3] <- sum(m$duration[m$age==1])
+factors$duration[4] <- sum(m$duration[m$age==2])
+factors$duration[5] <- sum(m$duration[m$zone==1])
+factors$duration[6] <- sum(m$duration[m$zone==2])
+factors$duration[7] <- sum(m$duration[m$zone==3])
+factors$duration[8] <- sum(m$duration[m$zone==4])
+factors$duration[9] <- sum(m$duration[m$zone==5])
+factors$duration[10] <- sum(m$duration[m$zone==6])
+factors$duration[11] <- sum(m$duration[m$zone==7])
+
+## duration
+factors$count[1] <- sum(m$count[m$class==1])
+factors$count[2] <- sum(m$count[m$class==2])
+factors$count[3] <- sum(m$count[m$age==1])
+factors$count[4] <- sum(m$count[m$age==2])
+factors$count[5] <- sum(m$count[m$zone==1])
+factors$count[6] <- sum(m$count[m$zone==2])
+factors$count[7] <- sum(m$count[m$zone==3])
+factors$count[8] <- sum(m$count[m$zone==4])
+factors$count[9] <- sum(m$count[m$zone==5])
+factors$count[10] <- sum(m$count[m$zone==6])
+factors$count[11] <- sum(m$count[m$zone==7])
+
+# premium
+factors$premium[1] <- sum(m$act_premium[m$class==1])
+factors$premium[2] <- sum(m$act_premium[m$class==2])
+factors$premium[3] <- sum(m$act_premium[m$age==1])
+factors$premium[4] <- sum(m$act_premium[m$age==2])
+factors$premium[5] <- sum(m$act_premium[m$zone==1])
+factors$premium[6] <- sum(m$act_premium[m$zone==2])
+factors$premium[7] <- sum(m$act_premium[m$zone==3])
+factors$premium[8] <- sum(m$act_premium[m$zone==4])
+factors$premium[9] <- sum(m$act_premium[m$zone==5])
+factors$premium[10] <- sum(m$act_premium[m$zone==6])
+factors$premium[11] <- sum(m$act_premium[m$zone==7])
+
+# rels
+factors$relitivity[2] <- factors$premium[2] / factors$premium[1]
+factors$relitivity[1] <- factors$premium[1] / factors$premium[1]
+factors$relitivity[3] <- factors$premium[3] / factors$premium[4]
+factors$relitivity[4] <- factors$premium[4] / factors$premium[4]
+factors$relitivity[5] <- factors$premium[5] / factors$premium[8]
+factors$relitivity[6] <- factors$premium[6] / factors$premium[8]
+factors$relitivity[7] <- factors$premium[7] / factors$premium[8]
+factors$relitivity[9] <- factors$premium[9] / factors$premium[8]
+factors$relitivity[10] <- factors$premium[10] / factorspremiumrel[8]
+factors$relitivity[11] <- factors$premium[11] / factorspremiumrel[8]
+factors$relitivity[8] <- factors$premium[8] / factors$premium[8]
+factors$relitivity <- round(factors$relitivity,3)
+factors
+ 
+
+
+## GLM relativities ###################################################################################################
+
+## I would rather create three tables (class, age, zone) and then rbind...
+
+# fit frequency model
+model.frequency <- glm(count ~ class + age + zone + offset(log(duration)), data=m, family=poisson)
+rels <- coef(model.frequency)
+f_rels <- exp(rels[1] + rels[-1]) / exp(rels[1])
+f_rels <- c(1, f_rels[1], 1, f_rels[2], 1, f_rels[3:8])
+
+# fit severity model
+model.severity <- glm(claim_severity ~ class + age + zone, data=m[m$claim_severity > 0,], family=Gamma("log"), weights=count)
+rels <- coef(model.severity)
+s_rels <- exp(rels[1] + rels[-1]) / exp(rels[1])
+s_rels <- c(1, s_rels[1], 1, s_rels[2], 1, s_rels[3:8])
+
+# normalize frequency rels
+factors$f_rels <- f_rels
+factors$f_rels[1] <- factors$f_rels[1] / factors$f_rels[1]
+factors$f_rels[2] <- factors$f_rels[2] / factors$f_rels[1]
+factors$f_rels[3] <- factors$f_rels[3] / factors$f_rels[4]
+factors$f_rels[4] <- factors$f_rels[4] / factors$f_rels[4]
+factors$f_rels[5] <- factors$f_rels[5] / factors$f_rels[8]
+factors$f_rels[6] <- factors$f_rels[6] / factors$f_rels[8]
+factors$f_rels[7] <- factors$f_rels[7] / factors$f_rels[8]
+factors$f_rels[9] <- factors$f_rels[9] / factors$f_rels[8]
+factors$f_rels[10] <- factors$f_rels[10] / factors$f_rels[8]
+factors$f_rels[11] <- factors$f_rels[11] / factors$f_rels[8]
+factors$f_rels[8] <- factors$f_rels[8] / factors$f_rels[8]
+factors$f_rels <- round(factors$f_rels,3)
+
+# normalize severity rels
+factors$s_rels <- s_rels
+factors$s_rels[1] <- factors$s_rels[1] / factors$s_rels[1]
+factors$s_rels[2] <- factors$s_rels[2] / factors$s_rels[1]
+factors$s_rels[3] <- factors$s_rels[3] / factors$s_rels[4]
+factors$s_rels[4] <- factors$s_rels[4] / factors$s_rels[4]
+factors$s_rels[5] <- factors$s_rels[5] / factors$s_rels[8]
+factors$s_rels[6] <- factors$s_rels[6] / factors$s_rels[8]
+factors$s_rels[7] <- factors$s_rels[7] / factors$s_rels[8]
+factors$s_rels[9] <- factors$s_rels[9] / factors$s_rels[8]
+factors$s_rels[10] <- factors$s_rels[10] / factors$s_rels[8]
+factors$s_rels[11] <- factors$s_rels[11] / factors$s_rels[8]
+factors$s_rels[8] <- factors$s_rels[8] / factors$s_rels[8]
+
+# final
+factors$glm_rels <- factors$f_rels * factors$s_rels
+factors$f_rels <- round(factors$f_rels,2)
+factors$s_rels <- round(factors$s_rels,2)
+factors$glm_rels <- round(factors$glm_rels,2)
+factors
+
+
+## motorcycle policy pricing ##########################################################################################
+
+
+
+options(scipen=999)
+d <- read.csv("http://staff.math.su.se/esbj/GLMbook/mccase.txt", header=F)
+
+d$age <- as.numeric(substr(d$V1,1,2))
+d$gender <- substr(d$V1,3,3)
+d$zone <- as.numeric(substr(d$V1,4,4))
+d$class <- as.numeric(substr(d$V1,5,5))
+d$v_age <- as.numeric(substr(d$V1,6,7))
+d$bonus <- as.numeric(substr(d$V1,8,8))
+d$duration <- as.numeric(substr(d$V1,9,16))
+d$count <- as.numeric(substr(d$V1,17,20))
+d$cost <- as.numeric(substr(d$V1,21,29))
+
+
